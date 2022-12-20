@@ -294,7 +294,8 @@ interface Context {
     /**
      * Writes the specified inputStream as a seekable stream.
      * This method is asynchronous and uses the global predefined executor
-     * defined in AsyncUtil
+     * service stored in [appAttribute] as [ASYNC_EXECUTOR_KEY].
+     * You can change this default in [io.javalin.config.JavalinConfig].
      *
      * @return the [CompletableFuture] used to write the seekable stream
      */
@@ -335,7 +336,8 @@ interface Context {
      * It means you should treat provided task as a result of this handler, and you can't use any other result function simultaneously.
      *
      * @param executor Thread-pool used to execute the given task,
-     * by default uses globally predefined executor service defined in [AsyncUtil]
+     * by default uses globally predefined executor service stored in [appAttribute] as [ASYNC_EXECUTOR_KEY].
+     * You can change this default in [io.javalin.config.JavalinConfig].
      *
      * @param timeout Timeout in milliseconds,
      * by default it's 0 which means timeout watcher is disabled.
