@@ -20,7 +20,6 @@ import io.javalin.http.util.CookieStore
 import io.javalin.http.util.MultipartUtil
 import io.javalin.http.util.SeekableWriter
 import io.javalin.json.jsonMapper
-import io.javalin.rendering.JavalinRenderer
 import io.javalin.rendering.fileRenderer
 import io.javalin.security.BasicAuthCredentials
 import io.javalin.util.function.ThrowingRunnable
@@ -117,7 +116,7 @@ interface Context {
 
     /**
      * Gets the request body as a [ByteArray].
-     * Calling this method returns the body as a [ByteArray]. If [io.javalin.JavalinConfig.maxRequestSize]
+     * Calling this method returns the body as a [ByteArray]. If [io.javalin.config.HttpConfig.maxRequestSize]
      * is set and body is bigger than its value, a [io.javalin.http.HttpResponseException] is throw,
      * with status 413 CONTENT_TOO_LARGE.
      */
@@ -295,8 +294,7 @@ interface Context {
     /**
      * Writes the specified inputStream as a seekable stream.
      * This method is asynchronous and uses the global predefined executor
-     * service stored in [appAttribute] as [ASYNC_EXECUTOR_KEY].
-     * You can change this default in [io.javalin.config.JavalinConfig].
+     * defined in AsyncUtil
      *
      * @return the [CompletableFuture] used to write the seekable stream
      */
@@ -337,8 +335,7 @@ interface Context {
      * It means you should treat provided task as a result of this handler, and you can't use any other result function simultaneously.
      *
      * @param executor Thread-pool used to execute the given task,
-     * by default uses globally predefined executor service stored in [appAttribute] as [ASYNC_EXECUTOR_KEY].
-     * You can change this default in [io.javalin.config.JavalinConfig].
+     * by default uses globally predefined executor service defined in [AsyncUtil]
      *
      * @param timeout Timeout in milliseconds,
      * by default it's 0 which means timeout watcher is disabled.
@@ -414,7 +411,7 @@ interface Context {
     fun removeCookie(name: String): Context = removeCookie(name, "/")
 
     /**
-     * Serializes object to a JSON-string using the registered [io.javalin.plugin.json.JsonMapper] and sets it as the context result.
+     * Serializes object to a JSON-string using the registered [io.javalin.http.Context.jsonMapper] and sets it as the context result.
      * Also sets content type to application/json.
      */
     fun json(obj: Any, type: Type): Context = contentType(ContentType.APPLICATION_JSON).result(jsonMapper().toJsonString(obj, type))
@@ -423,7 +420,7 @@ interface Context {
     fun json(obj: Any): Context = json(obj, obj::class.java)
 
     /**
-     * Serializes object to a JSON-stream using the registered [io.javalin.plugin.json.JsonMapper] and sets it as the context result.
+     * Serializes object to a JSON-stream using the registered [io.javalin.http.Context.jsonMapper] and sets it as the context result.
      * Also sets content type to application/json.
      */
     fun jsonStream(obj: Any, type: Type): Context = contentType(ContentType.APPLICATION_JSON).result(jsonMapper().toJsonStream(obj, type))
